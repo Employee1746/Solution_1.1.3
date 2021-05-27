@@ -20,18 +20,16 @@ public class UserDaoJDBCImpl implements UserDao {
     }
 
     public void createUsersTable() {
-        try (Connection connection = Util.getMySQLConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(CREATE_TABLE)) {
-            preparedStatement.executeUpdate();
+        try (Statement statement = Util.getMySQLConnection().createStatement()) {
+            statement.executeUpdate(CREATE_TABLE);
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
     public void dropUsersTable() {
-        try (Connection connection = Util.getMySQLConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(DROP_TABLE)) {
-            preparedStatement.executeUpdate();
+        try (Statement statement = Util.getMySQLConnection().createStatement()) {
+            statement.executeUpdate(DROP_TABLE);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -77,9 +75,8 @@ public class UserDaoJDBCImpl implements UserDao {
     }
 
     public void cleanUsersTable() {
-        try (Connection connection = Util.getMySQLConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(CLEAR_ALL_USERS)) {
-            preparedStatement.executeUpdate();
+        try (Statement statement = Util.getMySQLConnection().createStatement()) {
+            statement.executeUpdate(CLEAR_ALL_USERS);
         } catch (SQLException e) {
             e.printStackTrace();
         }
