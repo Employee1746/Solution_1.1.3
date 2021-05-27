@@ -11,7 +11,7 @@ public class UserDaoJDBCImpl implements UserDao {
     private final static String CREATE_TABLE = "CREATE TABLE IF NOT EXISTS users " +
             "(Id INT PRIMARY KEY AUTO_INCREMENT, name VARCHAR(20), lastName VARCHAR(20), age INT)";
     private final static String DROP_TABLE = "DROP TABLE IF EXISTS users";
-    private final static String DELETE_BY_ID = "DELETE FROM users WHERE Id = ";
+    private final static String DELETE_BY_ID = "DELETE FROM users WHERE Id = ?";
     private final static String CLEAR_ALL_USERS = "TRUNCATE users;";
     private final static String INSERT_USER = "INSERT INTO users(name, lastName, age) VALUES (?, ?, ?)";
     private final static String GET_ALL_USERS = "SELECT * FROM users";
@@ -20,16 +20,18 @@ public class UserDaoJDBCImpl implements UserDao {
     }
 
     public void createUsersTable() {
-        try (Statement statement = Util.getMySQLConnection().createStatement()) {
-            statement.executeUpdate(CREATE_TABLE);
+        try (Connection connection = Util.getMySQLConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(CREATE_TABLE)) {
+            preparedStatement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
     public void dropUsersTable() {
-        try (Statement statement = Util.getMySQLConnection().createStatement()) {
-            statement.executeUpdate(DROP_TABLE);
+        try (Connection connection = Util.getMySQLConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(DROP_TABLE)) {
+            preparedStatement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -49,9 +51,10 @@ public class UserDaoJDBCImpl implements UserDao {
     }
 
     public void removeUserById(long id) {
-        try (Statement statement = Util.getMySQLConnection().createStatement()) {
-            statement.executeUpdate(DELETE_BY_ID + id);
-            System.out.println("User with id = " + id + " has been removed");
+        try (Connection connection = Util.getMySQLConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(DELETE_BY_ID)) {
+            preparedStatement.setString(1, String.valueOf(id));
+            preparedStatement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -74,8 +77,9 @@ public class UserDaoJDBCImpl implements UserDao {
     }
 
     public void cleanUsersTable() {
-        try (Statement statement = Util.getMySQLConnection().createStatement()) {
-            statement.executeUpdate(CLEAR_ALL_USERS);
+        try (Connection connection = Util.getMySQLConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(CLEAR_ALL_USERS)) {
+            preparedStatement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }

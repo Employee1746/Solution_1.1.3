@@ -43,7 +43,7 @@ public class Util {
                         applySettings(configuration.getProperties()).build();
                 sessionFactory = configuration.buildSessionFactory(serviceRegistry);
             } catch (Exception e) {
-                System.out.println("Ошибка получения сессии");
+                e.printStackTrace();
             }
         }
         return sessionFactory;
